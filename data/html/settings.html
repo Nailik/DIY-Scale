@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=yes">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+
+    <title>Ultra Thin Scale - Settings</title>
+</head>
+
+
+<!-- Actual html -->
+
+<body onload="updatePage()">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Ultra Thin Scale - Settings</a>
+    </div>
+</nav>
+
+<div id="content" class="text-center">
+    <div class="list-group">
+        <a class="list-group-item list-group-item-action" id="calibrate" href="calibrate.html">
+            <h4 id="calibrateText">Not Yet Calibrated</h4>
+        </a>
+        <a class="list-group-item list-group-item-action" data-toggle="modal" data-target="#inputModal"
+           data-bs-target="network">
+            <div class="elementIcon" id="networkIcon"></div>
+            <h4>Network</h4>
+            <p id="network"></p>
+        </a>
+        <div class="list-group-item list-group-item-action" data-toggle="modal" data-target="#inputModal"
+             data-bs-target="wifi">
+            <div class="elementIcon" id="wifiIcon"></div>
+            <h4>Wifi</h4>
+            <p id="wifi"></p>
+        </div>
+        <div class="list-group-item list-group-item-action" onclick="requestChange('togglebluetooth')">
+            <div class="elementIcon" id="bluetoothIcon"></div>
+            <h4>Bluetooth</h4>
+            <p id="bluetooth"></p>
+        </div>
+        <div class="list-group-item list-group-item-action" onclick="requestChange('togglesound')">
+            <div class="elementIcon" id="soundIcon"></div>
+            <h4>Sound</h4>
+            <p id="sound"></p>
+        </div>
+        <div class="list-group-item list-group-item-action" onclick="requestChange('toggledisplay')">
+            <div class="elementIcon" id="displayIcon"></div>
+            <h4>Display</h4>
+            <p id="display"></p>
+        </div>
+        <div class="list-group-item list-group-item-action" onclick="requestChange('toggletimer')">
+            <div class="elementIcon" id="timerIcon"></div>
+            <h4>Timer</h4>
+            <p id="timer"></p>
+        </div>
+        <div class="list-group-item list-group-item-action" data-toggle="modal" data-target="#inputModal"
+             data-bs-target="brightness">
+            <div class="elementIcon" id="brightnessIcon"></div>
+            <h4>Brightness</h4>
+            <p id="brightness">Setup brightness of Display, Buttons, Led</p>
+        </div>
+        <div class="list-group-item list-group-item-action" data-toggle="modal" data-target="#inputModal"
+             data-bs-target="sleep">
+            <div class="elementIcon" id="sleepIcon"></div>
+            <h4>Device sleep time</h4>
+            <p id="sleep"></p>
+        </div>
+        <div class="list-group-item list-group-item-action" data-toggle="modal" data-target="#inputModal"
+             data-bs-target="reset">
+            <div class="elementIcon" id="resetIcon"></div>
+            <h4>Reset</h4>
+            <p id="reset">Reset all settings and restart device.</p>
+        </div>
+        <div class="list-group-item list-group-item-action">
+            <h4>Update</h4>
+            <p id="update">Select update file.</p>
+            <form method='POST' action='/doUpdate' enctype='multipart/form-data'>
+                <input class="form-control" type="file" name='update'>
+                <input class="btn btn-outline-primary" type='submit' id="submit" value='Update'>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Network</h4>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">Input Name and Password of your Network</p>
+                <form class="bs-component">
+                    <div class="form-group" id="firstInput" style="display: none;">
+                        <label class="form-label" for="input1">Network Name</label>
+                        <input type="text" class="form-control" placeholder="Network Name" id="input1">
+                    </div>
+                    <div class="form-group" id="secondInput" style="display: none;">
+                        <label class="form-label" for="input2">Password</label>
+                        <input type="text" class="form-control" placeholder="Password" id="input2">
+                    </div>
+                    <div class="form-group" id="numberInput" style="display: none;">
+                        <label class="form-label" for="inputNum">Time in minutes</label>
+                        <input type="number" class="form-control" min="1" id="inputNum" step="1" pattern="[0-9]">
+                    </div>
+                    <div id="sliderInput" style="display: none;">
+                        <div class="form-group">
+                            <label for="sliderInputD" class="form-label">Display</label>
+                            <input type="range" class="form-range" min="0" max="10" step="1" id="sliderInputD">
+                        </div>
+                        <div class="form-group">
+                            <label for="sliderInputB" class="form-label">Buttons</label>
+                            <input type="range" class="form-range" min="0" max="10" step="1" id="sliderInputB">
+                        </div>
+                        <div class="form-group">
+                            <label for="sliderInputL" class="form-label">Led</label>
+                            <input type="range" class="form-range" min="0" max="10" step="1" id="sliderInputL">
+                        </div>
+                    </div>
+                    <div class="form-check" id="resetCalibrationDiv" style="display: none;">
+                        <input class="form-check-input" type="checkbox" value="false" id="resetCalibration">
+                        <label class="form-check-label" for="resetCalibration">
+                            Reset calibration, too.
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="display: none;">
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group" id="onoffbtns" style="display: none;">
+                    <input type="radio" class="btn-check" id="modal_btn_on" name="btnradio" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="modal_btn_on">On</label>
+                    <input type="radio" class="btn-check" id="modal_btn_off" name="btnradio" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="modal_btn_off">Off</label>
+                </div>
+                <button type="button" class="btn btn-primary" id="saveModal"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Actual html -->
+
+<!-- necessary for modals -->
+<script src="../bootstrap/jquery.min.js"></script>
+<script src="../bootstrap/bootstrap.min.js"></script>
+</body>
+
+<script>
+    /* all icons from https://fonts.google.com/ */
+    const network_on_not_connected =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><g><path d=\"M0,0h24v24H0V0z\" fill=\"none\"/></g><g><path d=\"M24,8.98C20.93,5.9,16.69,4,12,4C7.31,4,3.07,5.9,0,8.98L12,21v-9h8.99L24,8.98z M19.59,14l-2.09,2.09l-0.3-0.3L15.41,14 L14,15.41l1.79,1.79l0.3,0.3L14,19.59L15.41,21l2.09-2.08L19.59,21L21,19.59l-2.08-2.09L21,15.41L19.59,14z\"/></g></svg>"
+    const network_connected = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"#8A817C\"><path d=\"M12,3C7.79,3 3.7,4.41 0.38,7C4.41,12.06 7.89,16.37 12,21.5C16.08,16.42 20.24,11.24 23.65,7C20.32,4.41 16.22,3 12,3Z\"/></svg>"
+    const network_off = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"#8A817C\"><path d=\"M3.27,1.44L2,2.72L4.05,4.77C2.75,5.37 1.5,6.11 0.38,7C4.41,12.06 12,21.5 12,21.5L15.91,16.63L19.23,19.95L20.5,18.68M12,3C10.6,3 9.21,3.17 7.86,3.5L18.18,13.81C20,11.5 22.05,9 23.65,7C20.32,4.41 16.22,3 12,3Z\"/></svg>"
+    const bluetooth_off = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M13 5.83l1.88 1.88-1.6 1.6 1.41 1.41 3.02-3.02L12 2h-1v5.03l2 2v-3.2zM5.41 4L4 5.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l4.29-4.29 2.3 2.29L20 18.59 5.41 4zM13 18.17v-3.76l1.88 1.88L13 18.17z\"/></svg>"
+    const bluetooth_on = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z\"/></svg>"
+    const bluetooth_connected = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M7 12l-2-2-2 2 2 2 2-2zm10.71-4.29L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88zM19 10l-2 2 2 2 2-2-2-2z\"/></svg>"
+    const sound_on = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M3 9v6h4l5 5V4L7 9H3zm7-.17v6.34L7.83 13H5v-2h2.83L10 8.83zM16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77 0-4.28-2.99-7.86-7-8.77z\"/></svg>"
+    const sound_off = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M4.34 2.93L2.93 4.34 7.29 8.7 7 9H3v6h4l5 5v-6.59l4.18 4.18c-.65.49-1.38.88-2.18 1.11v2.06c1.34-.3 2.57-.92 3.61-1.75l2.05 2.05 1.41-1.41L4.34 2.93zM10 15.17L7.83 13H5v-2h2.83l.88-.88L10 11.41v3.76zM19 12c0 .82-.15 1.61-.41 2.34l1.53 1.53c.56-1.17.88-2.48.88-3.87 0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zm-7-8l-1.88 1.88L12 7.76zm4.5 8c0-1.77-1.02-3.29-2.5-4.03v1.79l2.48 2.48c.01-.08.02-.16.02-.24z\"/></svg>"
+    const wifi_on = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 2c0-3.31-2.69-6-6-6s-6 2.69-6 6c0 2.22 1.21 4.15 3 5.19l1-1.74c-1.19-.7-2-1.97-2-3.45 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.48-.81 2.75-2 3.45l1 1.74c1.79-1.04 3-2.97 3-5.19zM12 3C6.48 3 2 7.48 2 13c0 3.7 2.01 6.92 4.99 8.65l1-1.73C5.61 18.53 4 15.96 4 13c0-4.42 3.58-8 8-8s8 3.58 8 8c0 2.96-1.61 5.53-4 6.92l1 1.73c2.99-1.73 5-4.95 5-8.65 0-5.52-4.48-10-10-10z\"/></svg>"
+    const wifi_off = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><g><path d=\"M0,0h24v24H0V0z\" fill=\"none\"/></g><g><g><path d=\"M2.81,2.81L1.39,4.22l2.69,2.69C2.78,8.6,2,10.71,2,13c0,2.76,1.12,5.26,2.93,7.07l1.42-1.42C4.9,17.21,4,15.21,4,13 c0-1.75,0.57-3.35,1.51-4.66l1.43,1.43C6.35,10.7,6,11.81,6,13c0,1.66,0.68,3.15,1.76,4.24l1.42-1.42C8.45,15.1,8,14.11,8,13 c0-0.63,0.15-1.23,0.41-1.76l1.61,1.61c0,0.05-0.02,0.1-0.02,0.15c0,0.55,0.23,1.05,0.59,1.41C10.95,14.77,11.45,15,12,15 c0.05,0,0.1-0.01,0.16-0.02l7.62,7.62l1.41-1.41L2.81,2.81z M17.7,14.87C17.89,14.28,18,13.65,18,13c0-3.31-2.69-6-6-6 c-0.65,0-1.28,0.1-1.87,0.3l1.71,1.71C11.89,9,11.95,9,12,9c2.21,0,4,1.79,4,4c0,0.05,0,0.11-0.01,0.16L17.7,14.87z M12,5 c4.42,0,8,3.58,8,8c0,1.22-0.27,2.37-0.77,3.4l1.49,1.49C21.53,16.45,22,14.78,22,13c0-5.52-4.48-10-10-10 c-1.78,0-3.44,0.46-4.89,1.28l1.48,1.48C9.63,5.27,10.78,5,12,5z\"/></g></g></svg>"
+    const display_on = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.79V18h-3.52L12 20.48 9.52 18H6v-3.52L3.52 12 6 9.52V6h3.52L12 3.52 14.48 6H18v3.52L20.48 12 18 14.48zM12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z\"/><circle cx=\"12\" cy=\"12\" r=\"2.5\"/></svg>";
+    const display_off = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M12 4c4.41 0 8 3.59 8 8s-3.59 8-8 8-8-3.59-8-8 3.59-8 8-8m0-2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z\"/></svg>";
+    const brightness = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16.01H3V4.99h18v14.02zM8 16h2.5l1.5 1.5 1.5-1.5H16v-2.5l1.5-1.5-1.5-1.5V8h-2.5L12 6.5 10.5 8H8v2.5L6.5 12 8 13.5V16zm4-7c1.66 0 3 1.34 3 3s-1.34 3-3 3V9z\"/></svg>"
+    const reset = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><g><path d=\"M0,0h24v24H0V0z\" fill=\"none\"/></g><g><g><path d=\"M6,13c0-1.65,0.67-3.15,1.76-4.24L6.34,7.34C4.9,8.79,4,10.79,4,13c0,4.08,3.05,7.44,7,7.93v-2.02 C8.17,18.43,6,15.97,6,13z M20,13c0-4.42-3.58-8-8-8c-0.06,0-0.12,0.01-0.18,0.01l1.09-1.09L11.5,2.5L8,6l3.5,3.5l1.41-1.41 l-1.08-1.08C11.89,7.01,11.95,7,12,7c3.31,0,6,2.69,6,6c0,2.97-2.17,5.43-5,5.91v2.02C16.95,20.44,20,17.08,20,13z\"/></g></g></svg>"
+    const timer_on = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M15.07 1.01h-6v2h6v-2zm-4 13h2v-6h-2v6zm8.03-6.62l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.14 4.74 14.19 4 12.07 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.11-.74-4.06-1.97-5.61zm-7.03 12.62c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z\"/></svg>"
+    const timer_off = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M10.04 6.29C10.66 6.11 11.32 6 12 6c3.86 0 7 3.14 7 7 0 .68-.11 1.34-.29 1.96l1.56 1.56c.47-1.08.73-2.27.73-3.52 0-4.97-4.03-9-9-9-1.25 0-2.44.26-3.53.72l1.57 1.57zm7.297-4.48l4.607 3.845-1.28 1.535-4.61-3.843zM3.02 2.1L1.61 3.51l1.37 1.37-.92.77 1.28 1.54 1.06-.88.8.8C3.83 8.69 3 10.75 3 13c0 4.97 4.03 9 9 9 2.25 0 4.31-.83 5.89-2.2l2.1 2.1 1.41-1.41L3.02 2.1zM12 20c-3.86 0-7-3.14-7-7 0-1.7.61-3.26 1.62-4.47l9.85 9.85C15.26 19.39 13.7 20 12 20zM7.48 3.73l.46-.38-1.28-1.54-.6.5z\"/></svg>"
+    const sleep =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#8A817C\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z\"/></svg>"
+
+    $('#brightnessIcon').html(brightness);
+    $('#resetIcon').html(reset);
+    $('#sleepIcon').html(sleep);
+
+    function updatePage() {
+        requestUpdate("network");
+        requestUpdate("wifi");
+        requestUpdate("bluetooth");
+        requestUpdate("sound");
+        requestUpdate("display");
+        requestUpdate("timer");
+        requestUpdate("sleep");
+        requestUpdate("calibrated");
+
+        /**
+         * poll network and bluetooth every 1 minute
+         */
+        setInterval(function () {
+            if (!inputModal.is(':visible')) {
+                //do not override modal information
+                requestUpdate("network");
+                requestUpdate("wifi");
+                requestUpdate("bluetooth");
+                requestUpdate("timer");
+                requestUpdate("sleep");
+            }
+        }, 10000);
+
+    }
+
+    const inputModal = $('#inputModal');
+    const sliderD = $('#sliderInputD');
+    const sliderB = $('#sliderInputB');
+    const sliderL = $('#sliderInputL');
+
+    let data;
+    inputModal.on('show.bs.modal', function (event) {
+        const modal = $(this);
+        const button = $(event.relatedTarget); // Button that triggered the modal
+        data = button.data('bs-target');
+
+        let title;
+        let message;
+        let saveText = "Save changes";
+
+        switch (data) {
+            case "network":
+                title = "Network"
+                message = "Setup Network for scale to connect<br/>"
+                break;
+            case "wifi":
+                title = "Wifi"
+                message = "Setup wifi hosted by Scale<br/>On = always on<br/>Off = on when not connected to network"
+                break;
+            case "brightness":
+                title = "Brightness"
+                message = "Setup brightness settings"
+                break;
+            case "reset":
+                title = "Reset settings"
+                message = "Use this to reset your settings if something is wrong.<br/>Device will restart afterwards."
+                saveText = "Confirm reset";
+                break;
+            case "sleep":
+                title = "Device sleep time"
+                message = "Set the time when the device will turn off in Minutes.<br/>You can always wake it up by touching a button"
+                break;
+        }
+
+        if (data === "network" || data === "wifi") {
+            modal.find('#numberInput').css('display', 'none');
+            modal.find('#firstInput').css('display', 'block');
+            modal.find('#secondInput').css('display', 'block');
+            modal.find('.modal-footer').css('display', 'block');
+            modal.find('.modal-footer').css('display', 'block');
+            modal.find('#onoffbtns').css('display', 'block');
+            modal.find('#sliderInput').css('display', 'none');
+            modal.find('#resetCalibrationDiv').css('display', 'none');
+            modal.find('#modal_btn_on').attr('checked', false);
+            modal.find('#modal_btn_off').attr('checked', false);
+        } else if (data === "brightness") {
+            modal.find('#numberInput').css('display', 'none');
+            modal.find('#sliderInput').css('display', 'block');
+            modal.find('#firstInput').css('display', 'none');
+            modal.find('#secondInput').css('display', 'none');
+            modal.find('.modal-footer').css('display', 'none');
+            modal.find('#resetCalibrationDiv').css('display', 'none');
+        } else if (data === "reset") {
+            modal.find('#numberInput').css('display', 'none');
+            modal.find('#sliderInput').css('display', 'none');
+            modal.find('#firstInput').css('display', 'none');
+            modal.find('#secondInput').css('display', 'none');
+            modal.find('.modal-footer').css('display', 'block');
+            modal.find('#onoffbtns').css('display', 'none');
+            modal.find('#resetCalibrationDiv').css('display', 'block');
+        } else if (data === "sleep") {
+            modal.find('#numberInput').css('display', 'block');
+            modal.find('#sliderInput').css('display', 'none');
+            modal.find('#firstInput').css('display', 'none');
+            modal.find('#secondInput').css('display', 'none');
+            modal.find('.modal-footer').css('display', 'block');
+            modal.find('#onoffbtns').css('display', 'none');
+            modal.find('#resetCalibrationDiv').css('display', 'none');
+        }
+
+        modal.find('.modal-title').html(title);
+        modal.find('.modal-message').html(message);
+        modal.find('#saveModal').html(saveText);
+
+        if (data !== "reset") {
+            requestUpdate(data);
+        }
+    });
+
+    $('#saveModal').click(function () {
+        if (data === "network" || data === "wifi") {
+            let input1 = $('#input1').val();
+            let input2 = $('#input2').val();
+            let onOff = $('#modal_btn_on').is(":checked");
+
+            if (input1.length < 1) {
+                alert("ssid cannot be empty");
+                return;
+            }
+            //inputs and button
+            requestChange("set" + data + "?param1=" + input1 + "&param2=" + input2 + "&param3=" + onOff);
+        } else if (data === "reset") {
+            let resetCalibration = $('#resetCalibration').is(':checked');
+            requestChange("set" + data + "?param1=" + resetCalibration);
+        } else if (data === "sleep") {
+            let num = $('#inputNum').val();
+            if (num <= 0) {
+                alert("cannot be 0 or less");
+                return;
+            }
+            requestChange("set" + data + "?param1=" + num);
+        }
+
+        //make things invisible so they dont flash on next opening
+        inputModal.find('#firstInput').css('display', 'none');
+        inputModal.find('#secondInput').css('display', 'none');
+        inputModal.find('#sliderInput').css('display', 'none');
+        inputModal.find('.modal-footer').css('display', 'none');
+        inputModal.find('#onoffbtns').css('display', 'none');
+        inputModal.find('#resetCalibrationDiv').css('display', 'none');
+        //everything needs to be done before toggle, else request is not sent
+        inputModal.modal('toggle');
+    });
+
+    sliderD.change(function (event) {
+        changedBrightness();
+    });
+
+    sliderB.change(function (event) {
+        changedBrightness();
+    });
+
+    sliderL.change(function (event) {
+        changedBrightness();
+    });
+
+    function changedBrightness() {
+        let brightnessD = sliderD.val();
+        let brightnessB = sliderB.val();
+        let brightnessL = sliderL.val();
+        requestChange("set" + data + "?param1=" + brightnessD + "&param2=" + brightnessB + "&param3=" + brightnessL);
+    }
+
+    /**
+     * network {"enabled": 1, "state": 1, "ssid": "..."}
+     */
+    function updateNetwork(network) {
+        let networkIcon;
+        let enabled = network["enabled"];
+        let state = network["state"];
+        let ssid = network["ssid"];
+        let stateText = ""
+
+        if (enabled === 1) {
+            if (state === 1) {
+                stateText = "Connected to \"" + ssid + "\"";
+                networkIcon = network_connected;
+            } else {
+                if (ssid === "") {
+                    stateText = "Network not setup";
+                } else {
+                    stateText = "Could not connect to \"" + ssid + "\"";
+                }
+                networkIcon = network_on_not_connected;
+            }
+        } else {
+            stateText = "Click to connect to \"" + ssid + "\"";
+            networkIcon = network_off;
+        }
+
+        $('#network').text(stateText);
+        $('#networkIcon').html(networkIcon);
+
+        if (inputModal.is(':visible') && data === "network") {
+            if (enabled === 1) {
+                $('#modal_btn_on').prop('checked', true)
+            } else {
+                $('#modal_btn_off').prop('checked', true)
+            }
+            $('#input1').val(ssid);
+        }
+    }
+
+    /**
+     * wifi {"state": 1, "always": 1, ssid:"..."}
+     */
+    function updateWifi(wifi) {
+        let wifiIcon;
+        let alwaysOn = wifi["always"];
+        let ssid = wifi["ssid"];
+        let state = wifi["state"];
+        let stateText;
+
+        if (state === 1) {
+            if (alwaysOn === 1) {
+                stateText = "always on, Hosting Network \"" + ssid + "\"";
+            } else {
+                stateText = "Hosting Network \"" + ssid + "\"";
+            }
+            wifiIcon = wifi_on;
+        } else {
+            stateText = "Click to turn Wifi On";
+            wifiIcon = wifi_off;
+        }
+
+        $('#wifi').text(stateText);
+        $('#wifiIcon').html(wifiIcon);
+
+        if (inputModal.is(':visible') && data === "wifi") {
+            if (alwaysOn === 1) {
+                $('#modal_btn_on').prop('checked', true)
+            } else {
+                $('#modal_btn_off').prop('checked', true)
+            }
+            $('#input1').val(ssid);
+        }
+    }
+
+    /**
+     * bluetooth
+     */
+    function updateBluetooth(bluetooth) {
+        let bluetoothIcon;
+        switch (bluetooth) {
+            case "1":
+                bluetooth = "Bluetooth on";
+                bluetoothIcon = bluetooth_on;
+                break;
+            case "0":
+                bluetooth = "Click to turn Bluetooth On";
+                bluetoothIcon = bluetooth_off;
+                break;
+            default:
+                bluetooth = "Connected to: \"" + bluetooth + "\"";
+                bluetoothIcon = bluetooth_connected;
+                break;
+        }
+        $('#bluetooth').text(bluetooth);
+        $('#bluetoothIcon').html(bluetoothIcon);
+    }
+
+    /**
+     * Sound
+     */
+    function updateSound(sound) {
+        let soundIcon;
+        switch (sound) {
+            case "1":
+                sound = "Sound on";
+                soundIcon = sound_on;
+                break;
+            default:
+                sound = "Tap to turn Sound on";
+                soundIcon = sound_off;
+                break;
+        }
+        $('#sound').text(sound);
+        $('#soundIcon').html(soundIcon);
+    }
+
+    /**
+     * Timer
+     */
+    function updateTimer(timer) {
+        let timerIcon;
+        switch (timer) {
+            case "1":
+                timer = "Timer on";
+                timerIcon = timer_on;
+                break;
+            default:
+                timer = "Tap to turn Timer on<br/>or long press timer button (left)";
+                timerIcon = timer_off;
+                break;
+        }
+        $('#timer').html(timer);
+        $('#timerIcon').html(timerIcon);
+    }
+
+    /**
+     * Timer
+     */
+    function updateCalibrated(calibrated) {
+        let color;
+
+        switch (calibrated) {
+            case "1":
+                calibrated = "Calibrated"
+                color = '#66CC00'
+                break;
+            default:
+                calibrated = "Not Yet calibrated"
+                color = '#CC0000'
+                break;
+        }
+
+        $('#calibrateText').css('color', color).text(calibrated);
+    }
+
+    /**
+     * sleep time
+     */
+    function updateSleep(sleep) {
+        $('#sleep').text("Turns off after " + sleep + " minutes");
+
+        if (inputModal.is(':visible') && data === "sleep") {
+            $('#inputNum').val(sleep);
+        }
+    }
+
+    /**
+     * Display {"always": 1, "state": 1, "brightness": 0-15}
+     */
+    function updateBrightness(brightness) {
+        let display = brightness["display"];
+        let buttons = brightness["buttons"];
+        let led = brightness["led"];
+
+        if (inputModal.is(':visible') && data === "brightness") {
+            let sliderD = document.getElementById('sliderInputD');
+            sliderD.min = 0;
+            sliderD.max = 15;
+            sliderD.step = 1;
+            sliderD.value = display;
+
+            let sliderB = document.getElementById('sliderInputB');
+            sliderB.min = 0;
+            sliderB.max = 255;
+            sliderB.step = 1;
+            sliderB.value = buttons;
+
+            let sliderL = document.getElementById('sliderInputL');
+            sliderL.min = 0;
+            sliderL.max = 255;
+            sliderL.step = 1;
+            sliderL.value = led;
+        }
+    }
+
+    function updateDisplay(display) {
+        let stateText;
+        let displayIcon;
+        let alwaysOn = display["always"];
+        let state = display["state"];
+
+        if (alwaysOn === 1) {
+            stateText = "always on - tap to allow app to turn it off";
+            displayIcon = display_on;
+        } else {
+            if (state === 1) {
+                stateText = "on, depends on app - tap to activate always on";
+                displayIcon = display_on;
+            } else {
+                stateText = "off, depends on app - tap to activate always on";
+                displayIcon = display_off;
+            }
+        }
+
+        $('#display').text(stateText);
+        $('#displayIcon').html(displayIcon);
+    }
+
+    function updateVersion(version) {
+        $('#update').text("Select update file (Version: " + version + ")");
+    }
+
+    function requestUpdate(type) {
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                switch (type) {
+                    case "network":
+                        updateNetwork(JSON.parse(this.response))
+                        break;
+                    case "wifi":
+                        updateWifi(JSON.parse(this.response));
+                        break;
+                    case "bluetooth":
+                        updateBluetooth(this.response)
+                        break;
+                    case "sound":
+                        updateSound(this.response)
+                        break;
+                    case "brightness":
+                        updateBrightness(JSON.parse(this.response))
+                        break;
+                    case "display":
+                        updateDisplay(JSON.parse(this.response))
+                        break;
+                    case "sleep":
+                        updateSleep(this.response)
+                        break;
+                    case "timer":
+                        updateTimer(this.response)
+                        break;
+                    case "calibrated":
+                        updateCalibrated(this.response)
+                        break;
+                    case "version":
+                        updateVersion(this.response)
+                        break;
+                }
+            }
+        };
+        request.open("GET", type, true);
+        request.send();
+    }
+
+    function requestChange(type, params) {
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                switch (type) {
+                    case "setnetwork":
+                        updateNetwork(JSON.parse(this.response))
+                        break;
+                    case "setsleep":
+                        updateSleep(this.response)
+                        break;
+                    case "setwifi":
+                        updateWifi(JSON.parse(this.response))
+                        break;
+                    case "togglebluetooth":
+                        updateBluetooth(this.response)
+                        break;
+                    case "togglesound":
+                        updateSound(this.response)
+                        break;
+                    case "toggletimer":
+                        updateTimer(this.response)
+                        break;
+                    case "toggledisplay":
+                        updateDisplay(JSON.parse(this.response))
+                        break;
+                }
+            }
+        };
+
+        request.open("POST", type, true);
+        request.send(params);
+    }
+</script>
+
+<style>
+    /* custom css */
+
+    .modal-footer {
+        display: block;
+    }
+
+    #saveModal {
+        float: right;
+    }
+
+    #content {
+        max-width: 500px;
+        margin: -1px auto;
+    }
+
+    #submit {
+        margin: 20px auto;
+    }
+
+    .list-group-item {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        margin-bottom: 0;
+        cursor: pointer;
+    }
+
+    .elementIcon {
+        float: left;
+    }
+
+</style>
+</html>

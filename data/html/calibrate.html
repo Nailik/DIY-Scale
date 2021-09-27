@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=yes">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+
+    <title>Ultra Thin Scale</title>
+</head>
+
+
+<!-- Actual html -->
+
+<body class="text-center">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand">Ultra Thin Scale - Calibration</a>
+        <a class="btn btn-primary" onclick="request('cancelCalibration')" role="button">Cancel</a>
+    </div>
+</nav>
+
+<div id="content">
+    <h4 id="subtitle">Calibration Step 0</h4>
+    <p id="step-message">insert the weight of your calibration weight and then proceed to next step</p>
+    <div id="start-div">
+        <div class="form-group" id="numberInput">
+            <label class="form-label" for="inputNum">Weight in gramms</label>
+            <input type="number" class="form-control" min="1" id="inputNum" step=".1" pattern="[0-9]">
+        </div>
+        <div class="d-flex">
+            <a class="btn btn-outline-primary" role="button" id="start" onclick="startCalibration()">Start Calibration</a>
+        </div>
+    </div>
+    <div id="steps-div" class="text-center" style="display: none;">
+        <div style="text-align: center;" id="step-image"></div>
+        <div class="d-flex">
+            <a class="btn btn-outline-primary" role="button" id="next" onclick="requestNextStep()">Next</a>
+        </div>
+    </div>
+</div>
+<!-- Actual html -->
+
+<!-- necessary for modals -->
+<script src="../bootstrap/jquery.min.js"></script>
+<script src="../bootstrap/bootstrap.min.js"></script>
+
+</body>
+<script>
+
+    let image1 = "<svg width=\"326\" height=\"261\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
+        " <g>\n" +
+        "  <title>Layer 1</title>\n" +
+        "  <rect stroke=\"#000\" fill=\"#fff\" x=\"2.25883\" y=\"2.26236\" width=\"320.99999\" height=\"210.50722\" id=\"svg_4\" rx=\"31\" stroke-width=\"4\"/>\n" +
+        "  <ellipse stroke=\"#000\" fill=\"#ffffff\" cx=\"280.28404\" cy=\"28.18145\" id=\"svg_7\" rx=\"7.0303\" ry=\"7.0303\" stroke-width=\"5\"/>\n" +
+        "  <rect stroke=\"#000\" fill=\"#fff\" x=\"2.48355\" y=\"180.23093\" width=\"320.99999\" height=\"78.55595\" id=\"svg_1\" rx=\"8\" stroke-width=\"4\"/>\n" +
+        "  <ellipse stroke=\"#000\" fill=\"#ffffff\" cx=\"296.64768\" cy=\"28.18145\" id=\"svg_5\" rx=\"7.0303\" ry=\"7.0303\" stroke-width=\"5\"/>\n" +
+        "  <ellipse stroke=\"#000\" fill=\"#ffffff\" cx=\"41.4008\" cy=\"157.70413\" id=\"svg_6\" rx=\"7.0303\" ry=\"7.0303\" stroke-width=\"5\"/>\n" +
+        "  <ellipse stroke=\"#000\" fill=\"#ffffff\" cx=\"25.03716\" cy=\"157.70413\" id=\"svg_8\" rx=\"7.0303\" ry=\"7.0303\" stroke-width=\"5\"/>\n" +
+        " </g>\n" +
+        "\n" +
+        "</svg>"
+
+    let image2 = "<svg width=\"326\" height=\"261\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
+        " <g>\n" +
+        "  <title>Layer 1</title>\n" +
+        "  <rect stroke-width=\"4\" rx=\"31\" id=\"svg_4\" height=\"210.50722\" width=\"320.99999\" y=\"2.26236\" x=\"1.87569\" fill=\"#fff\" stroke=\"#000\"/>\n" +
+        "  <rect stroke-width=\"4\" rx=\"8\" id=\"svg_1\" height=\"78.55595\" width=\"320.99999\" y=\"180.23093\" x=\"2.10041\" fill=\"#fff\" stroke=\"#000\"/>\n" +
+        "  <rect stroke=\"#000\" stroke-width=\"4\" rx=\"8\" id=\"svg_2\" height=\"124.1498\" width=\"29.42921\" y=\"24.67543\" x=\"17.42607\" fill=\"#fff\"/>\n" +
+        "  <rect stroke=\"#000\" stroke-width=\"4\" rx=\"8\" id=\"svg_3\" height=\"124.1498\" width=\"29.42921\" y=\"21.22715\" x=\"280.26125\" fill=\"#fff\"/>\n" +
+        "  <ellipse stroke=\"#666666\" ry=\"13.02682\" rx=\"13.02682\" id=\"svg_6\" cy=\"130.41946\" cx=\"294.85426\" stroke-width=\"4\" fill=\"#666666\"/>\n" +
+        " </g>\n" +
+        "\n" +
+        "</svg>"
+
+    let image3 = "<svg width=\"326\" height=\"261\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
+        " <g>\n" +
+        "  <title>Layer 1</title>\n" +
+        "  <rect stroke-width=\"4\" rx=\"31\" id=\"svg_4\" height=\"210.50722\" width=\"320.99999\" y=\"2.26236\" x=\"1.87569\" fill=\"#fff\" stroke=\"#000\"/>\n" +
+        "  <rect stroke-width=\"4\" rx=\"8\" id=\"svg_1\" height=\"78.55595\" width=\"320.99999\" y=\"180.23093\" x=\"2.10041\" fill=\"#fff\" stroke=\"#000\"/>\n" +
+        "  <rect stroke=\"#000\" stroke-width=\"4\" rx=\"8\" id=\"svg_2\" height=\"124.1498\" width=\"29.42921\" y=\"24.67543\" x=\"17.42607\" fill=\"#fff\"/>\n" +
+        "  <rect stroke=\"#000\" stroke-width=\"4\" rx=\"8\" id=\"svg_3\" height=\"124.1498\" width=\"29.42921\" y=\"21.22715\" x=\"280.26125\" fill=\"#fff\"/>\n" +
+        "  <ellipse stroke=\"#666666\" ry=\"13.02682\" rx=\"13.02682\" id=\"svg_6\" cy=\"39.23175\" cx=\"32.01909\" stroke-width=\"4\" fill=\"#666666\"/>\n" +
+        " </g>\n" +
+        "\n" +
+        "</svg>"
+
+    let image4 = "<svg width=\"326\" height=\"261\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
+        " <g>\n" +
+        "  <title>Layer 1</title>\n" +
+        "  <rect stroke=\"#000\" fill=\"#fff\" x=\"2.25883\" y=\"2.26236\" width=\"320.99999\" height=\"210.50722\" id=\"svg_4\" rx=\"31\" stroke-width=\"4\"/>\n" +
+        "  <rect stroke=\"#000\" fill=\"#fff\" x=\"2.48355\" y=\"180.23093\" width=\"320.99999\" height=\"78.55595\" id=\"svg_1\" rx=\"8\" stroke-width=\"4\"/>\n" +
+        " </g>\n" +
+        "\n" +
+        "</svg>"
+
+    let images = [image1, image2, image3, image4]
+
+    let currentStep = -1;
+    let weight = 0.0;
+
+    function startCalibration() {
+        currentStep = -1;
+        weight = parseFloat($('#inputNum').val());
+
+        console.log(weight);
+
+        if (weight <= 0) {
+            alert("weight has to be greater than 0");
+            return;
+        }
+
+        $('#start-div').css('display', 'none');
+        $('#steps-div').css('display', 'block');
+        nextStep();
+    }
+
+    function requestNextStep() {
+        switch (currentStep) {
+            case 0:
+                request("startCalibration?param0=" + weight)
+                break;
+            case 1:
+                request("calibrate?param0=1")
+                break;
+            case 2:
+                request("calibrate?param0=2")
+                break;
+            case 3:
+                request("finishCalibration")
+                break;
+        }
+    }
+
+    function nextStep() {
+        currentStep++;
+        let message = ""
+
+        switch (currentStep) {
+            case 0:
+                message = "open scale at the bottom and remove any weight from sensor"
+                break;
+            case 1:
+                message = "place weight on right hand sensor"
+                break;
+            case 2:
+                message = "place weight on left hand sensor"
+                break;
+            case 3:
+                message = "close the scale"
+                $('#next').text("Finish");
+                break;
+            default:
+                break;
+        }
+
+        $('#step-image').html(images[currentStep]);
+        $('#step-message').text(message);
+    }
+
+    function request(type, params) {
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                console.log("type: "+type);
+                if(type.startsWith("startCalibration")){
+                    nextStep();
+                }else  if(type.startsWith("calibrate")){
+                    nextStep();
+                }else if(type.startsWith("cancelCalibration") ||
+                    type.startsWith("finishCalibration")){
+                    window.location.href = "index.html";
+                }
+            }
+        };
+
+        request.open("POST", type, true);
+        request.send(params);
+    }
+</script>
+<style>
+    #content {
+        max-width: 500px;
+        margin: 50px auto;
+    }
+
+    img {
+        float: left;
+    }
+
+    tr {
+        cursor: pointer;
+    }
+
+    #numberInput {
+        margin: 140px auto;
+        max-width: 500px;
+        min-width: 200px;
+    }
+
+    #step-image {
+        margin: auto;
+
+    }
+
+    #start {
+        margin: 140px auto;
+        max-width: 500px;
+        min-width: 200px;
+    }
+
+    #next {
+        margin: 140px auto;
+        max-width: 500px;
+        min-width: 200px;
+    }
+</style>
+
+</html>
