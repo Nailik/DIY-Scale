@@ -24,7 +24,7 @@ class Timer;
 class Sensor;
 
 //pin 27 and 25 so 2^27 + 2^25 to Hex
-#define BUTTON_PIN_BITMASK 0x1008000000
+#define BUTTON_PIN_BITMASK 0xA000000
 
 /**
  * setup display, buttons and load cells and handle sleep mode
